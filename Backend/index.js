@@ -1,3 +1,4 @@
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -5,22 +6,23 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-
 const app = express();
 app.use(cors());
 app.use(express.json());
-
 app.use("/images", express.static("public"));
 
-// Secret key for JWT
-const JWT_SECRET = process.env.JWT_SECRET;// 🔒 Change in production
+// --- Environment Variables ---
+const PORT = process.env.PORT || 3000;
+const MONGO_URL = process.env.MONGO_URL; // MongoDB Atlas connection string
+const JWT_SECRET = process.env.JWT_SECRET; // Secret key for JWT
 
-// --- MongoDB connection ---
-mongoose.connect("mongodb://127.0.0.1:27017/glamlook")
+// --- MongoDB Connection ---
+mongoose.connect(MONGO_URL)
   .then(() => console.log("DB connected"))
-  .catch(() => console.log("DB not connected"));
+  .catch((err) => console.log("DB connection error:", err));
 
 // --- Schemas & Models ---
+
 // Product Schema
 const Product = mongoose.model("Product", {
   name: String,
@@ -29,17 +31,17 @@ const Product = mongoose.model("Product", {
   image: String,
   occasion: String,
   color: String,
-  desc:String,
+  desc: String,
 }, "products");
 
-// Users
+// User Schema
 const User = mongoose.model("User", {
   name: String,
   email: { type: String, unique: true },
   password: String,
 }, "users");
 
-// Orders
+// Order Schema
 const Order = mongoose.model("Order", {
   items: [
     {
@@ -53,12 +55,12 @@ const Order = mongoose.model("Order", {
   customerName: String,
   customerEmail: String,
   shippingAddress: String,
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // link to user
-  status:{type: String, default: "Pending"},
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  status: { type: String, default: "Pending" },
   createdAt: { type: Date, default: Date.now },
 }, "orders");
 
-// --- Middleware for JWT authentication ---
+// --- JWT Middleware ---
 const authMiddleware = (req, res, next) => {
   const token = req.headers["authorization"];
   if (!token) return res.status(401).json({ error: "No token provided" });
@@ -70,8 +72,12 @@ const authMiddleware = (req, res, next) => {
   });
 };
 
-// --- Product Routes ---
-// Get all products
+// --- Routes ---
+
+// Health Check
+app.get("/", (req, res) => res.send("Backend is running!"));
+
+// Products
 app.get("/products", async (req, res) => {
   try {
     const data = await Product.find();
@@ -81,7 +87,6 @@ app.get("/products", async (req, res) => {
   }
 });
 
-// Get single product
 app.get("/products/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -92,11 +97,11 @@ app.get("/products/:id", async (req, res) => {
   }
 });
 
-// --- Auth Routes ---
-// Signup
+// Auth - Signup
 app.post("/signup", async (req, res) => {
   const { name, email, password } = req.body;
-  if (!name || !email || !password) return res.status(400).json({ error: "All fields required" });
+  if (!name || !email || !password)
+    return res.status(400).json({ error: "All fields required" });
 
   try {
     const existingUser = await User.findOne({ email });
@@ -113,7 +118,7 @@ app.post("/signup", async (req, res) => {
   }
 });
 
-// Login
+// Auth - Login
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: "All fields required" });
@@ -132,9 +137,7 @@ app.post("/login", async (req, res) => {
   }
 });
 
-
-// --- User Profile Routes ---
-// Get logged-in user profile
+// User Profile
 app.get("/users/profile", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select("-password");
@@ -145,7 +148,6 @@ app.get("/users/profile", authMiddleware, async (req, res) => {
   }
 });
 
-// Update logged-in user profile
 app.put("/users/profile", authMiddleware, async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -155,14 +157,9 @@ app.put("/users/profile", authMiddleware, async (req, res) => {
 
     if (name) user.name = name;
     if (email) user.email = email;
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      user.password = hashedPassword;
-    }
+    if (password) user.password = await bcrypt.hash(password, 10);
 
     await user.save();
-
-    // Generate new token if email/password changed
     const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "7d" });
 
     res.json({
@@ -175,14 +172,13 @@ app.put("/users/profile", authMiddleware, async (req, res) => {
   }
 });
 
-
-// --- Order Routes ---
-// Place Order
+// Orders
 app.post("/orders", authMiddleware, async (req, res) => {
   try {
     const { items, totalPrice, customerName, customerEmail, shippingAddress } = req.body;
 
-    if (!items || items.length === 0) return res.status(400).json({ error: "Cart is empty" });
+    if (!items || items.length === 0)
+      return res.status(400).json({ error: "Cart is empty" });
 
     const newOrder = new Order({
       items,
@@ -190,7 +186,7 @@ app.post("/orders", authMiddleware, async (req, res) => {
       customerName,
       customerEmail,
       shippingAddress,
-      userId: req.userId, // link order to logged-in user
+      userId: req.userId,
     });
 
     const savedOrder = await newOrder.save();
@@ -200,12 +196,10 @@ app.post("/orders", authMiddleware, async (req, res) => {
   }
 });
 
-// Get orders for logged-in user
-
 app.get("/orders", authMiddleware, async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.userId })
-      .populate("items.productId", "name price image category") // populate product fields
+      .populate("items.productId", "name price image category")
       .sort({ createdAt: -1 });
 
     res.json(orders);
@@ -214,8 +208,7 @@ app.get("/orders", authMiddleware, async (req, res) => {
   }
 });
 
-
 // --- Start Server ---
-app.listen(3000, () => {
-  console.log("Server started on port 3000...");
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
