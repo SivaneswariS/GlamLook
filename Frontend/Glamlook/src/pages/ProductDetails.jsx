@@ -12,7 +12,7 @@ const ProductDetails = () => {
   const isLoggedIn = !!localStorage.getItem("userToken");
 
   useEffect(() => {
-    fetch(`http://localhost:3000/products/${id}`)
+    fetch(`https://app-glamlook.onrender.com/products/${id}`)
       .then((res) => {
         if (!res.ok) throw new Error("Product not found");
         return res.json();
@@ -41,7 +41,7 @@ const ProductDetails = () => {
         {/* Left - Image */}
         <div className="w-full h-[500px] overflow-hidden rounded-xl shadow">
           <img
-            src={`http://localhost:3000/images/${product.image}`}
+            src={`https://app-glamlook.onrender.com/images/${product.image}`}
             alt={product.name}
             className="h-full w-full object-contain rounded-lg"
           />

@@ -45,19 +45,19 @@ const Home = () => {
   <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
     {[
       {
-        _id: "68a70845b0822b654ceec4a9",
+        _id: "68ac850e4cf398548d6eb7fe",
         name: "Frock",
         desc: "Elegant choice for parties",
         image: "images/dresses/pink.jpg",
       },
       {
-        _id: "68a72ba2b0822b654ceec4bb",
+        _id: "68aca9f36a85cb3ce1fd544e",
         name: "Party Heels",
         desc: "Perfect match for festive outfits",
         image: "images/footwear/party.jpg",
       },
       {
-        _id: "68a7276db0822b654ceec4b9",
+        _id: "68aca9d06a85cb3ce1fd544c",
         name: "Sling Bag",
         desc: "Chic accessory for every look",
         image: "images/accessories/bag.jpg",
@@ -72,7 +72,7 @@ const Home = () => {
         <Link to={`/products/${item._id}`}>
           <div className="h-48 rounded-xl mb-4 overflow-hidden flex items-center justify-center bg-gray-100">
             <img
-              src={`http://app-glamlook.onrender.com/images/${item.image}`}
+              src={`https://app-glamlook.onrender.com/images/${item.image}`}
 
               alt={item.name}
               className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"

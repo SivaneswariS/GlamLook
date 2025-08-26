@@ -57,7 +57,7 @@ const MyOrders = () => {
   {order.items.map((item, idx) => (
     <li key={idx} className="flex items-center gap-3">
       <img
-        src={`http://app-glamlook.onrender.com/images/${item.productId.image}`}
+        src={`https://app-glamlook.onrender.com/images/${item.productId.image}`}
         alt={item.productId.name}
         className="w-12 h-12 object-cover rounded mb-4 mt-2"
       />

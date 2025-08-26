@@ -38,7 +38,7 @@ const ProductListing = () => {
 
   // Fetch products
   useEffect(() => {
-    fetch("http://https://app-glamlook.onrender.com/products")
+    fetch("https://app-glamlook.onrender.com/products")
       .then((res) => res.json())
       .then((data) => setProducts(data));
   }, []);
@@ -212,7 +212,7 @@ const ProductListing = () => {
               <Link to={`/products/${product._id}`}>
                 <div className="h-64 w-full overflow-hidden flex items-center justify-center bg-gray-100">
                   <img
-                    src={`http://localhost:3000/images/${product.image}`}
+                    src={`https://app-glamlook.onrender.com/images/${product.image}`}
                     alt={product.name}
                     className="max-h-full max-w-full object-contain transform hover:scale-105 transition-transform duration-300"
                   />
