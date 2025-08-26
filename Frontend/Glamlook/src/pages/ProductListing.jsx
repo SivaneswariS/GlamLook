@@ -38,7 +38,7 @@ const ProductListing = () => {
 
   // Fetch products
   useEffect(() => {
-    fetch("http://localhost:3000/products")
+    fetch("http://https://app-glamlook.onrender.com/products")
       .then((res) => res.json())
       .then((data) => setProducts(data));
   }, []);
