@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_BASE_URL } from "../api";
 import { useCart } from "../context/CartContext"; // ✅ adjust path if needed
 
 const Checkout = () => {
@@ -36,14 +37,14 @@ const Checkout = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token"); // ✅ get token
-      const res = await fetch("http://localhost:3000/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // ✅ fixed with backticks
-        },
-        body: JSON.stringify(orderData),
-      });
+   const res = await fetch(`${API_BASE_URL}/orders`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify(orderData),
+});
 
       if (!res.ok) throw new Error("Failed to place order");
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { API_BASE_URL } from "../api";
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -9,11 +10,9 @@ const MyOrders = () => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("token"); // JWT stored after login
-        const response = await fetch("http://localhost:3000/orders", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+       const response = await fetch(`${API_BASE_URL}/orders`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
 
         if (!response.ok) {
           throw new Error("Failed to fetch orders");
@@ -58,7 +57,7 @@ const MyOrders = () => {
   {order.items.map((item, idx) => (
     <li key={idx} className="flex items-center gap-3">
       <img
-        src={`http://localhost:3000/images/${item.productId.image}`}
+        src={`http://app-glamlook.onrender.com/images/${item.productId.image}`}
         alt={item.productId.name}
         className="w-12 h-12 object-cover rounded mb-4 mt-2"
       />

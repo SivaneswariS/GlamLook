@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { API_BASE_URL } from "../api";
 
 const ProfilePage = () => {
   const [profile, setProfile] = useState({ name: "", email: "" });
@@ -10,9 +11,9 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch("http://localhost:3000/users/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      const res = await fetch(`${API_BASE_URL}/users/profile`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
         const data = await res.json();
         if (res.ok) {
           setProfile({ name: data.name, email: data.email });

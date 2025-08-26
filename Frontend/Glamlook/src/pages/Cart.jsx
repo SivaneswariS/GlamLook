@@ -22,7 +22,8 @@ const Cart = () => {
             {/* Left - Product Info */}
             <div className="flex items-center gap-4">
               <img
-                src={`http://localhost:3000/images/${item.image}`}
+                src={`http://app-glamlook.onrender.com/images/${item.image}`}
+
                 alt={item.name}
                 className="w-24 h-24 object-cover rounded-lg"
               />

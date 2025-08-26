@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API_BASE_URL } from "../api"; 
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/signup", formData);
+      const res = await axios.post(`${API_BASE_URL}/signup`, formData);
 
       // ✅ Save JWT token immediately after signup
       localStorage.setItem("token", res.data.token);

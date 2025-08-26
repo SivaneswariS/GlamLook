@@ -72,7 +72,8 @@ const Home = () => {
         <Link to={`/products/${item._id}`}>
           <div className="h-48 rounded-xl mb-4 overflow-hidden flex items-center justify-center bg-gray-100">
             <img
-              src={`http://localhost:3000/images/${item.image}`}
+              src={`http://app-glamlook.onrender.com/images/${item.image}`}
+
               alt={item.name}
               className="max-h-full max-w-full object-contain transition-transform duration-300 hover:scale-105"
             />
