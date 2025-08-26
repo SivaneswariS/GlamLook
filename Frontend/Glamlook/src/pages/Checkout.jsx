@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { API_BASE_URL } from "../api";
+import { API_BASE_URL } from "../config";
 import { useCart } from "../context/CartContext"; // ✅ adjust path if needed
 
 const Checkout = () => {
